@@ -1,0 +1,38 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'springboot-s2i' image.
+# The 'assemble' script builds your application source ready to run.
+#
+# For more information refer to the documentation:
+# https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+[ "$SCRIPT_DEBUG" = "true" ] && { set -x ; printenv ; }
+
+ls -ltr $S2I_SOURCE_DIR
+
+if [ "$1" = "-h" ]; then
+    exec $S2I_PATH/usage
+fi
+
+__check_common_already_loaded 2> /dev/null || source $S2I_PATH/common.sh
+
+case $BUILDER in
+    [Gg][Rr][Aa][Dd][Ll][Ee])
+	restore_artifacts
+	build_gradle_project
+	;;
+    [Mm][Aa][Vv][Ee][Nn])
+	build_maven_project
+	;;
+    *)
+	if [ -f "$S2I_SOURCE_DIR/build.gradle" ]; then
+	    restore_artifacts
+	    build_gradle_project
+	elif [ -f "$S2I_SOURCE_DIR/pom.xml" ]; then
+	    build_maven_project
+	fi
+	;;
+esac
+
+check_build

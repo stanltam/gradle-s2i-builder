@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+exec $OLD_S2I_PATH/run $*

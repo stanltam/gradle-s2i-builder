@@ -1,0 +1,44 @@
+#!/bin/bash -e
+
+#
+#
+#
+function print_functions() {
+    cat << EOF
+There are functions in $1:
+---
+$(awk '/^function [^_]/ { print $2; }' $1 |sort)
+---
+EOF
+}
+
+cat << EOF
+This is the Gradle S2I builder image.
+To use it, install S2I: https://github.com/openshift/source-to-image
+
+Sample invocation:
+
+s2i build git://<source code> gradle-s2i <application_image>
+
+You can then run the resulting image via:
+docker run <application_image>
+
+====================================================================
+$(print_functions $S2I_PATH/common.sh)
+$(print_functions $S2I_PATH/common.sh)
+
+To overload any use sript like:
+cat << EOS > .s2i/bin/assemble
+#!/bin/bash
+
+source $S2I_PATH/common.sh
+
+function <function_name_to_override>() {
+  echo "\$FUNCNAME: overloaded"
+}
+
+source $S2I_PATH/assemble
+
+EOS
+
+EOF
