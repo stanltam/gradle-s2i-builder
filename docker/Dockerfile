@@ -63,6 +63,8 @@ CMD [ "/bin/bash", "-c", "$S2I_PATH/usage" ]
 COPY s2i/bin/* ${S2I_PATH}/
 
 
+USER 0
 RUN chgrp -R root ${S2I_PATH}/ && \
-    chown g=u ${S2I_PATH}/
+    chown -R g=u ${S2I_PATH}/
 
+USER 185
