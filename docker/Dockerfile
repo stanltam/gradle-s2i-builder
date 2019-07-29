@@ -12,8 +12,10 @@ ARG GRADLE_VERSION
 ARG OLD_S2I_PATH
 
 USER 0
+ADD ./devops.crt /tmp
 
 RUN \
+    keytool -import -trustcacerts -keystore  $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -alias Root -import -file /tmp/devops.crt -noprompt ; \
     set -x ; \
     [ -z "$GRADLE_VERSION" ] && { echo "GRADLE_VERSION must be defined" ; exit 1 ; } ; \
     GRADLE_HOME=/opt/gradle/${GRADLE_VERSION} ; \
