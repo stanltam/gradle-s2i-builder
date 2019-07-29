@@ -65,6 +65,6 @@ COPY s2i/bin/* ${S2I_PATH}/
 
 USER 0
 RUN chgrp -R root ${S2I_PATH}/ && \
-    chown -R g=u ${S2I_PATH}/
+    chmod -R g=u ${S2I_PATH}/
 
 USER 185
